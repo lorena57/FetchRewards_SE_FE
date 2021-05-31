@@ -21,10 +21,11 @@ const fetchData = () => {
     })
     .then((data) => {
       console.log(data);
-      const html = data
+      let figure = removeFalsyValues(data);
+      const html = figure
         .map((user) => {
           return `
-          <div class= 'user'>
+          <div class= 'rewards'>
           <p>List ID: ${user.listId}</p>
           <p>Name: ${user.name}</p>
           </div>`;
@@ -40,3 +41,10 @@ const fetchData = () => {
 };
 
 fetchData();
+
+const removeFalsyValues = (data) => {
+  let filtered = data.filter((el) => {
+    // return el.name != null && el.name != '';
+    return !!el.name;
+  });
+};
