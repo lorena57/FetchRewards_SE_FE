@@ -1,13 +1,10 @@
 'use strict';
 
-// Display all the items grouped by "listId"
-// Sort the results first by "listId" then by "name" when displaying.
-// Filter out any items where "name" is blank or null.
-
 const errorContainer = document.querySelector('.main');
 
 const baseURL = 'https://fetch-hiring.s3.amazonaws.com/hiring.json';
 
+// Error message for fetch function
 const renderError = function (msg) {
   errorContainer.insertAdjacentHTML('beforebegin', msg);
 };
@@ -20,7 +17,6 @@ const fetchData = () => {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       let figure = removeFalsyValues(data);
       const html = figure
         .map((user) => {
@@ -31,20 +27,23 @@ const fetchData = () => {
           </div>`;
         })
         .join('');
-      console.log(html);
       document.querySelector('#app').insertAdjacentHTML('afterbegin', html);
     })
     .catch((error) => {
-      console.log(error);
-      renderError(`${error.message}. Try again`);
+      renderError(`${error.message}. Try again.`);
     });
 };
 
 fetchData();
 
 const removeFalsyValues = (data) => {
-  let filtered = data.filter((el) => {
-    // return el.name != null && el.name != '';
-    return !!el.name;
+  let filtered = data.filter((values) => {
+    return !!values.name;
   });
+
+  let sortedData = filtered.sort((a, b) => {
+    return a.listId - b.listId || a.id - b.id;
+  });
+
+  return sortedData;
 };
