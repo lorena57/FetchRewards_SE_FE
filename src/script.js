@@ -4,14 +4,19 @@
 // Sort the results first by "listId" then by "name" when displaying.
 // Filter out any items where "name" is blank or null.
 
+const errorContainer = document.querySelector('.main');
+
 const baseURL = 'https://fetch-hiring.s3.amazonaws.com/hiring.json';
 
+const renderError = function (msg) {
+  errorContainer.insertAdjacentHTML('beforebegin', msg);
+};
+
 const fetchData = () => {
-  fetch('https://fetch-hiring.s3.amazonaws.com/hiring.json')
+  fetch(baseURL)
     .then((response) => {
-      if (!response.ok) {
-        throw Error('Error');
-      }
+      if (!response.ok)
+        throw new Error(`Something went wrong: (${response.status})`);
       return response.json();
     })
     .then((data) => {
@@ -28,7 +33,10 @@ const fetchData = () => {
       console.log(html);
       document.querySelector('#app').insertAdjacentHTML('afterbegin', html);
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error);
+      renderError(`${error.message}. Try again`);
+    });
 };
 
 fetchData();
